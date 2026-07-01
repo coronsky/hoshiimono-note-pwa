@@ -1,0 +1,283 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#245d63">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ホシイモノート">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="ホシイモノート">
+  <title>ホシイモノート</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="./style.css?v=13">
+</head>
+<body>
+<div class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Hoshiimono Note</p>
+        <h1>ホシイモノート</h1>
+        <p class="lead">買う予定のものを写真で残し、必要なものだけチェックしながら買い物できます。</p>
+        <p id="sync-status" class="sync-status">同期状態を確認中</p>
+      </div>
+      <button id="focus-form" class="primary-button" type="button">追加</button>
+    </header>
+
+    <main class="main-grid">
+      <section class="panel controls" aria-label="検索と表示">
+        <label class="search-control">
+          検索
+          <input id="search-input" type="search" placeholder="商品名・店・メモで検索">
+        </label>
+        <div class="control-row">
+          <label>
+            表示
+            <select id="filter-select">
+              <option value="shopping">買い物リスト</option>
+              <option value="all">すべて</option>
+              <option value="needed">必要</option>
+              <option value="later">後で検討</option>
+              <option value="done">購入済み</option>
+            </select>
+          </label>
+          <label>
+            カテゴリ
+            <select id="category-filter">
+              <option value="all">すべて</option>
+            </select>
+          </label>
+          <label>
+            並び順
+            <select id="sort-select">
+              <option value="priority">優先度</option>
+              <option value="store">購入先</option>
+              <option value="price-desc">高い順</option>
+              <option value="price-asc">安い順</option>
+              <option value="newest">新しい順</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <form id="item-form" class="panel form-panel">
+          <div class="section-title">
+            <h2 id="form-title">買うものを追加</h2>
+            <button id="reset-form" class="ghost-button" type="button">リセット</button>
+          </div>
+
+          <div class="photo-preview">
+            <img id="preview-image" alt="登録する商品の写真">
+            <span id="preview-empty">写真を追加</span>
+          </div>
+
+          <div class="photo-inputs">
+            <label class="file-picker">
+              カメラ撮影
+              <input id="photo-camera" type="file" accept="image/*" capture="environment">
+            </label>
+            <label class="file-picker">
+              写真フォルダ
+              <input id="photo-library" type="file" accept="image/*">
+            </label>
+            <label>
+              Web画像URL
+              <input id="photo-url" type="url" placeholder="https://example.com/item.jpg">
+            </label>
+          </div>
+
+          <label>
+            商品名
+            <input id="item-name" type="text" placeholder="例: 牛乳、充電ケーブル、洗剤">
+          </label>
+
+          <div class="split-fields">
+            <label>
+              金額
+              <input id="item-price" type="number" min="0" step="1" placeholder="980">
+            </label>
+            <label>
+              購入先
+              <input id="item-store" type="text" placeholder="スーパー、Amazonなど">
+            </label>
+          </div>
+
+          <div class="split-fields">
+            <label>
+              カテゴリ
+              <select id="item-category">
+                <option>食品</option>
+                <option>日用品</option>
+                <option>家電</option>
+                <option>衣類</option>
+                <option>薬・ケア</option>
+                <option>その他</option>
+              </select>
+            </label>
+            <label>
+              優先度
+              <select id="item-priority">
+                <option value="3">高</option>
+                <option value="2" selected>中</option>
+                <option value="1">低</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            メモ
+            <textarea id="item-note" rows="3" placeholder="サイズ、型番、候補URL、買う理由など"></textarea>
+          </label>
+
+          <div class="checks">
+            <label class="check-pill">
+              <input id="item-needed" type="checkbox" checked>
+              <span>買う予定</span>
+            </label>
+            <label class="check-pill">
+              <input id="item-done" type="checkbox">
+              <span>購入済み</span>
+            </label>
+          </div>
+
+          <button class="primary-button full" type="submit">保存</button>
+        </form>
+
+        <section class="panel list-panel">
+          <div class="section-title list-title">
+            <div>
+              <h2>買い物リスト</h2>
+              <p id="list-summary" class="list-summary">0件</p>
+            </div>
+            <div class="actions">
+              <input id="import-file" type="file" accept="application/json" hidden>
+              <div class="view-toggle" role="group" aria-label="表示形式">
+                <button id="view-list" class="view-button is-active" type="button">LIST</button>
+                <button id="view-gallery" class="view-button" type="button">PHOTO</button>
+              </div>
+              <button id="copy-list" class="ghost-button" type="button">コピー</button>
+              <button id="import-list" class="ghost-button" type="button">読込</button>
+              <button id="export-list" class="secondary-button" type="button">保存</button>
+            </div>
+          </div>
+          <div id="empty-list" class="empty">表示できる買い物候補がありません。</div>
+          <div id="items" class="items"></div>
+        </section>
+      </section>
+
+      <section class="stats" aria-label="買い物状況">
+        <article>
+          <span>未購入で必要</span>
+          <strong id="open-count">0件</strong>
+        </article>
+        <article>
+          <span>予定金額</span>
+          <strong id="open-total">0円</strong>
+        </article>
+        <article>
+          <span>購入済み</span>
+          <strong id="done-count">0件</strong>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <template id="item-template">
+    <article class="item-card">
+      <div class="item-photo-wrap">
+        <img class="item-photo" alt="">
+        <div class="no-photo">写真なし</div>
+      </div>
+      <div class="item-content">
+        <div class="item-head">
+          <div>
+            <p class="item-meta"></p>
+            <h3 class="item-name"></h3>
+          </div>
+          <strong class="item-price"></strong>
+        </div>
+        <p class="item-store"></p>
+        <p class="item-note"></p>
+        <div class="item-actions">
+          <label class="check-pill small">
+            <input class="needed-toggle" type="checkbox">
+            <span>買う</span>
+          </label>
+          <label class="check-pill small">
+            <input class="done-toggle" type="checkbox">
+            <span>済み</span>
+          </label>
+          <button class="ghost-button edit-item" type="button">編集</button>
+          <button class="danger-button delete-item" type="button">削除</button>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <section id="crop-modal" class="crop-modal" aria-label="写真をトリミング" hidden>
+    <div class="crop-panel">
+      <div class="section-title">
+        <h2>写真をトリミング</h2>
+        <button id="crop-cancel" class="ghost-button" type="button">キャンセル</button>
+      </div>
+      <canvas id="crop-canvas" width="640" height="480"></canvas>
+      <label class="crop-zoom">
+        拡大
+        <input id="crop-zoom" type="range" min="100" max="300" value="100">
+      </label>
+      <div class="crop-actions">
+        <button id="crop-reset" class="ghost-button" type="button">中央に戻す</button>
+        <button id="crop-apply" class="primary-button" type="button">この範囲で使う</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="detail-modal" class="detail-modal" aria-label="商品詳細" hidden>
+    <div class="detail-panel">
+      <div class="detail-visual">
+        <img id="detail-photo" class="detail-photo" alt="">
+        <div id="detail-photo-empty" class="detail-photo-empty">NO IMAGE</div>
+      </div>
+      <div class="detail-body">
+        <div class="section-title detail-title">
+          <div>
+            <p id="detail-meta" class="detail-meta"></p>
+            <h2 id="detail-name"></h2>
+          </div>
+          <button id="detail-close" class="ghost-button icon-button" type="button" aria-label="閉じる">X</button>
+        </div>
+        <dl class="detail-grid">
+          <div>
+            <dt>金額</dt>
+            <dd id="detail-price"></dd>
+          </div>
+          <div>
+            <dt>購入先</dt>
+            <dd id="detail-store"></dd>
+          </div>
+          <div>
+            <dt>状態</dt>
+            <dd id="detail-status"></dd>
+          </div>
+          <div>
+            <dt>登録日</dt>
+            <dd id="detail-created"></dd>
+          </div>
+        </dl>
+        <p id="detail-note" class="detail-note"></p>
+        <div class="detail-actions">
+          <button id="detail-edit" class="primary-button" type="button">編集</button>
+          <button id="detail-ok" class="ghost-button" type="button">閉じる</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="./app.js?v=13"></script>
+</body>
+</html>
+

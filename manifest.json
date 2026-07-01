@@ -1,0 +1,33 @@
+{
+  "id": "./",
+  "name": "ホシイモノート",
+  "short_name": "ホシイモノート",
+  "description": "買う予定のものを写真付きで管理し、必要なものだけ買い物リストとして確認できるスマホ向けアプリです。",
+  "lang": "ja",
+  "start_url": "./index.html?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#06070d",
+  "theme_color": "#245d63",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
